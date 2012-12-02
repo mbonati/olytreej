@@ -2,15 +2,12 @@ package it.lab15.olympicstree.core.physics;
 
 import it.lab15.olympicstree.core.data.beans.Bean;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import traer.physics.Particle;
 import traer.physics.ParticleSystem;
 
 public class OTParticleSystem<T extends Bean> extends ParticleSystem {
 
-	protected ArrayList particlesInt;
-	
 	
 	public OTParticleSystem(float g, float somedrag) {
 		super(g, somedrag);
@@ -36,6 +33,10 @@ public class OTParticleSystem<T extends Bean> extends ParticleSystem {
 	public OTParticleSystem addParticle(OTParticle partilce){
 		particles.add(partilce);
 		return this;
+	}
+	
+	public List<OTParticle> getOTParticles(){
+		return particles;
 	}
 
 }

@@ -182,7 +182,6 @@ public class BasicCanvas extends PApplet {
 
 	@Override
 	public void draw() {
-		
 		//Background
 		drawBackground();
 		
@@ -196,7 +195,9 @@ public class BasicCanvas extends PApplet {
 		
 		//Watermark logo
 		drawWatermark();
+		
 	}
+
 
 	protected void drawDebugInformations() {
 		if (this.displayDebugIformations){
@@ -222,5 +223,5 @@ public class BasicCanvas extends PApplet {
 	public void setDisplayDebugIformations(boolean displayDebugIformations) {
 		this.displayDebugIformations = displayDebugIformations;
 	}
-
+	
 }

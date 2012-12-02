@@ -5,6 +5,6 @@ import it.lab15.olympicstree.ui.commons.BasicCanvas;
 
 public interface ParticleRenderer {
 
-	public void draw(OTParticle particle, BasicCanvas canvas);
+	public void render(OTParticle particle, BasicCanvas canvas);
 	
 }

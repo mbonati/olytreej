@@ -16,45 +16,47 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import traer.physics.Particle;
-
 public class FirstClusterExperiment extends MainCanvas {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FirstClusterExperiment.class);
 
 	OTParticleSystem physics;
 	BasicParticleRenderer particleRenderer;
+	private boolean displayed;
 	
 	public FirstClusterExperiment() {
 		super();
 	}
 
 	public void setup() {
+		LOG.debug("setup called");
 		super.setup();
 
 		smooth();
 		stroke(0);
-		
-		physics = new OTParticleSystem(0.0f, 0.05f);
-	
+
+		physics = new OTParticleSystem(0.0f, 0.1f);
+		physics.clear();
+
 		particleRenderer = new BasicParticleRenderer(){
 			@Override
-			public void draw(OTParticle particle, BasicCanvas canvas) {
-				super.draw(particle, canvas);
+			public void render(OTParticle particle, BasicCanvas canvas) {
+				super.render(particle, canvas);
 			}
 		};
 		
 		loadData();
+		LOG.debug("setup done");
 	}
 
 	protected void loadData(){
-		LOG.error("loadData called");
+		LOG.debug("loadData called");
 		try {
 			EditionFactory ef = new EditionFactory();
 			List<Edition> allEditions = ef.loadAll();
 			
 			for (Edition edition:allEditions){
-				EditionParticle editionParticle = new EditionParticle(0, edition);
+				EditionParticle editionParticle = new EditionParticle(1,(int) random(0,600f),(int) random(0,600f),0, edition);
 				physics.addParticle(editionParticle);
 			}
 			
@@ -65,9 +67,16 @@ public class FirstClusterExperiment extends MainCanvas {
 	}
 	
 	public void drawContent() {
-		super.drawContent();
+		LOG.trace("drawContent...");
 		
+		super.drawContent();
+
 		physics.tick();
+		
+		List<OTParticle> particles = physics.getOTParticles();
+		for (OTParticle particle:particles){
+			particleRenderer.render(particle, this);
+		}
 		
 	}
 

@@ -61,5 +61,7 @@ public class Edition implements Bean {
 		this.hostCity = hostCity;
 	}
 
-
+	public String toString(){
+		return "id="+id+";year="+year+";hostCity="+hostCity;
+	}
 }
