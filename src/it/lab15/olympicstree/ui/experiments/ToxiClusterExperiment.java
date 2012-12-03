@@ -10,6 +10,7 @@ import it.lab15.olympicstree.ui.MainCanvas;
 import it.lab15.olympicstree.ui.tree.renderers.impl.BasicParticleRenderer;
 import it.lab15.olympicstree.ui.utils.ProcessingUtils;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,12 +24,17 @@ import toxi.physics2d.behaviors.GravityBehavior;
 
 public class ToxiClusterExperiment extends MainCanvas {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ToxiClusterExperiment.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(ToxiClusterExperiment.class);
 
 	OTPhysics2D physics;
 	BasicParticleRenderer particleRenderer;
-	private boolean displayed;
 	
+	// squared snap distance for picking particles
+	float snapDist=20*20;
+
+	VerletParticle2D selected = null;
+
 	public ToxiClusterExperiment() {
 		super();
 	}
@@ -39,53 +45,99 @@ public class ToxiClusterExperiment extends MainCanvas {
 
 		smooth();
 		stroke(0);
-
-		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D (0.0f,0.3f);
+		
+		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D(0.0f, 0.9f);
 		physics = new OTPhysics2D();
 		physics.setWorldBounds(new Rect(0, 0, width, height));
-		physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.1f)));
-		physics.setDrag(0.05f);
+		physics.addBehavior(new GravityBehavior(gravity));
+		physics.setDrag(0.3f);
 		physics.clear();
 
 		particleRenderer = new BasicParticleRenderer();
-		
+
 		loadData();
 		LOG.debug("setup done");
 	}
 
-	protected void loadData(){
+	protected void loadData() {
 		LOG.debug("loadData called");
 		try {
 			EditionFactory ef = new EditionFactory();
 			List<Edition> allEditions = ef.loadAll();
-			
-			for (Edition edition:allEditions){
-				EditionParticle editionParticle = new EditionParticle(random(0,600f),random(0,600f), edition);
-				editionParticle.setWeight(0.9f);
-				physics.addBehavior(new AttractionBehavior(editionParticle, 20, -1.2f, 0.01f));
+
+			for (Edition edition : allEditions) {
+				EditionParticle editionParticle = new EditionParticle(random(0,
+						600f), random(0, 600f), edition);
+				editionParticle.setWeight(2.9f);
+				physics.addBehavior(new AttractionBehavior(editionParticle, 20,
+						-1.2f, 0.01f));
 				physics.addParticle(editionParticle);
 			}
-			
-		} catch (Exception ex){
+
+		} catch (Exception ex) {
 			LOG.error("loadData error: {}", ex.getMessage(), ex);
 		}
-		
+
 	}
-	
+
 	public void drawContent() {
 		LOG.trace("drawContent...");
-		
+
 		super.drawContent();
 
 		physics.update();
-		
+
 		List<VerletParticle2D> particles = physics.particles;
-		for (VerletParticle2D particle:particles){
-			particleRenderer.render((OTParticle)particle, this);
+		for (VerletParticle2D particle : particles) {
+			particleRenderer.render((OTParticle) particle, this);
 		}
-		
+
 	}
 
+	// check all particles if mouse pos is less than snap distance
+	public void mousePressed() {
+		selected = null;
+		//Vec2D mousePos = new Vec2D(mouseX, mouseY);
+		Vec2D mousePos = new Vec2D(mouseX+camPos.x, mouseY+camPos.y);
+		for (Iterator i = physics.particles.iterator(); i.hasNext();) {
+			VerletParticle2D p = (VerletParticle2D) i.next();
+			// if mouse is close enough, keep a reference to
+			// the selected particle and lock it (becomes unmovable by physics)
+			if (p.distanceToSquared(mousePos) < snapDist) {
+				this.lockPan();
+				selected = p;
+				selected.lock();
+				((OTParticle)p).selected = true;
+				break;
+			}
+		}
+		if (selected==null){
+			this.unlockPan();
+			super.mousePressed();
+		}
+	}
+
+	// only react to mouse dragging events if we have a selected particle
+	@Override
+	public void mouseDragged() {
+		if (selected != null) {
+			selected.set(mouseX+camPos.x, mouseY+camPos.y);
+		} else {
+			super.mouseDragged();
+		}
+	}
+
+	// if we had a selected particle unlock it again and kill reference
+	public void mouseReleased() {
+		if (selected != null) {
+			this.unlockPan();
+			((OTParticle)selected).selected = false;
+			selected.unlock();
+			selected = null;
+		} else {
+			super.mouseReleased();
+		}
+	}
 
 	/**
 	 * @param args

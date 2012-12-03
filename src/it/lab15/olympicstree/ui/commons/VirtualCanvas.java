@@ -14,14 +14,15 @@ public class VirtualCanvas extends BasicCanvas {
 	private Vec2 mp = new Vec2(); // this holds the mouse position in a Vec2
 
 	// Camera
-	private Vec2 camPos = new Vec2(); // camera position
+	protected Vec2 camPos = new Vec2(); // camera position
 	private Vec2 camPosDest = new Vec2(); // where camera wants to be, for
 											// smoothing
 	private float camZoom = 0; // used for camera zooming, not currently used
 	private boolean draggingScreen = false; // is the screen being dragged?
 	private float screenDragSpeed = 17; // how fast the screen is scrolled
 
-	private boolean dragEnabled = true;
+	private boolean panEnabled = true;
+	private boolean panLocked = false;
 	
 	public VirtualCanvas() {
 		super();
@@ -44,7 +45,7 @@ public class VirtualCanvas extends BasicCanvas {
 
 	// manages camera
 	public void manageCam() {
-		if (this.dragEnabled){
+		if (this.panEnabled){
 			// okay... if we move the camera then the mouse position gets whacky
 			// this gets the mouse pos relative to screen
 			mp.nowEquals(mouseX + (camPos.x), mouseY + (camPos.y));
@@ -67,7 +68,7 @@ public class VirtualCanvas extends BasicCanvas {
 	}// end manageCam()
 
 	protected boolean isDraggingScreen() {
-		return (mousePressed /*
+		return (mousePressed && !this.panLocked && this.panEnabled /*
 							 * && !mouseOverMagnet && !mouseOverDraggable &&
 							 * !mouseOverArt
 							 */);
@@ -92,11 +93,21 @@ public class VirtualCanvas extends BasicCanvas {
 		return;
 	}// end absScreen()
 
-	public boolean isDragEnabled() {
-		return dragEnabled;
+	public boolean isPanEnabled() {
+		return this.panEnabled;
 	}
 
-	public void setDragEnabled(boolean dragEnabled) {
-		this.dragEnabled = dragEnabled;
+	public void setPanEnabled(boolean dragEnabled) {
+		this.panEnabled = dragEnabled;
 	}
+	
+	public void lockPan(){
+		this.panLocked = true;
+	}
+	
+	public void unlockPan(){
+		this.panLocked = false;
+	}
+	
+	
 }

@@ -12,6 +12,7 @@ public class OTParticle<T extends Bean> extends VerletParticle2D {
 
 	public Map<String, Object> properties = new HashMap<String, Object>();
 	public T bean;
+	public boolean selected;
 
 	public OTParticle(float x, float y, float z, T bean) {
 		super(x, y, z);

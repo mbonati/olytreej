@@ -18,7 +18,8 @@ public class BasicParticleRenderer implements ParticleRenderer {
 		canvas.smooth();
 		canvas.fill(100, 120, 255);
 		canvas.noStroke();
-		canvas.ellipse(particle.x(), particle.y(), 20, 20);
+		canvas.stroke(particle.selected ? 0xff00ffff : 0xff000000);
+		canvas.ellipse(particle.x(), particle.y(), 50, 50);
 		canvas.noSmooth();
 		LOG.trace("rendered.");
 	}
