@@ -3,7 +3,6 @@ package it.lab15.olympicstree.ui.commons;
 import it.lab15.olympicstree.commons.Vec2;
 import it.lab15.olympicstree.resources.ResourcesLocator;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 

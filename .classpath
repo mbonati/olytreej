@@ -15,5 +15,7 @@
 	<classpathentry kind="lib" path="lib/peasycam.jar"/>
 	<classpathentry kind="lib" path="lib/csvjdbc.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/toxiclibscore.jar"/>
+	<classpathentry kind="lib" path="lib/verletphysics.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

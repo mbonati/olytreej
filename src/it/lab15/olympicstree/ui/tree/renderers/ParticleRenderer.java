@@ -7,4 +7,5 @@ public interface ParticleRenderer {
 
 	public void render(OTParticle particle, BasicCanvas canvas);
 	
+	
 }

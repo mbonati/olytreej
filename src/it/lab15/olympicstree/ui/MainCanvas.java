@@ -1,6 +1,5 @@
 package it.lab15.olympicstree.ui;
 
-import it.lab15.olympicstree.ui.commons.BasicCanvas;
 import it.lab15.olympicstree.ui.commons.VirtualCanvas;
 
 import org.slf4j.Logger;

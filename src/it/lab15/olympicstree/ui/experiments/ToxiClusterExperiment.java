@@ -4,10 +4,9 @@ import it.lab15.olympicstree.AppDefines;
 import it.lab15.olympicstree.core.data.beans.Edition;
 import it.lab15.olympicstree.core.data.beans.EditionFactory;
 import it.lab15.olympicstree.core.physics.OTParticle;
-import it.lab15.olympicstree.core.physics.OTParticleSystem;
+import it.lab15.olympicstree.core.physics.OTPhysics2D;
 import it.lab15.olympicstree.core.physics.particleimpl.EditionParticle;
 import it.lab15.olympicstree.ui.MainCanvas;
-import it.lab15.olympicstree.ui.commons.BasicCanvas;
 import it.lab15.olympicstree.ui.tree.renderers.impl.BasicParticleRenderer;
 import it.lab15.olympicstree.ui.utils.ProcessingUtils;
 
@@ -16,15 +15,21 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FirstClusterExperiment extends MainCanvas {
+import toxi.geom.Rect;
+import toxi.geom.Vec2D;
+import toxi.physics2d.VerletParticle2D;
+import toxi.physics2d.behaviors.AttractionBehavior;
+import toxi.physics2d.behaviors.GravityBehavior;
 
-	private static final Logger LOG = LoggerFactory.getLogger(FirstClusterExperiment.class);
+public class ToxiClusterExperiment extends MainCanvas {
 
-	OTParticleSystem physics;
+	private static final Logger LOG = LoggerFactory.getLogger(ToxiClusterExperiment.class);
+
+	OTPhysics2D physics;
 	BasicParticleRenderer particleRenderer;
 	private boolean displayed;
 	
-	public FirstClusterExperiment() {
+	public ToxiClusterExperiment() {
 		super();
 	}
 
@@ -35,15 +40,14 @@ public class FirstClusterExperiment extends MainCanvas {
 		smooth();
 		stroke(0);
 
-		physics = new OTParticleSystem(0.0f, 0.1f);
+		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D (0.0f,0.3f);
+		physics = new OTPhysics2D();
+		physics.setWorldBounds(new Rect(0, 0, width, height));
+		physics.addBehavior(new GravityBehavior(new Vec2D(0, 0.1f)));
+		physics.setDrag(0.05f);
 		physics.clear();
 
-		particleRenderer = new BasicParticleRenderer(){
-			@Override
-			public void render(OTParticle particle, BasicCanvas canvas) {
-				super.render(particle, canvas);
-			}
-		};
+		particleRenderer = new BasicParticleRenderer();
 		
 		loadData();
 		LOG.debug("setup done");
@@ -56,7 +60,9 @@ public class FirstClusterExperiment extends MainCanvas {
 			List<Edition> allEditions = ef.loadAll();
 			
 			for (Edition edition:allEditions){
-				EditionParticle editionParticle = new EditionParticle(1,(int) random(0,600f),(int) random(0,600f),0, edition);
+				EditionParticle editionParticle = new EditionParticle(random(0,600f),random(0,600f), edition);
+				editionParticle.setWeight(0.9f);
+				physics.addBehavior(new AttractionBehavior(editionParticle, 20, -1.2f, 0.01f));
 				physics.addParticle(editionParticle);
 			}
 			
@@ -71,11 +77,11 @@ public class FirstClusterExperiment extends MainCanvas {
 		
 		super.drawContent();
 
-		physics.tick();
+		physics.update();
 		
-		List<OTParticle> particles = physics.getOTParticles();
-		for (OTParticle particle:particles){
-			particleRenderer.render(particle, this);
+		List<VerletParticle2D> particles = physics.particles;
+		for (VerletParticle2D particle:particles){
+			particleRenderer.render((OTParticle)particle, this);
 		}
 		
 	}
@@ -86,7 +92,7 @@ public class FirstClusterExperiment extends MainCanvas {
 	 */
 	public static void main(String[] args) {
 		LOG.info("Starting Dendril {}...", AppDefines.APPLICATION_NAME);
-		ProcessingUtils.runSketch(FirstClusterExperiment.class);
+		ProcessingUtils.runSketch(ToxiClusterExperiment.class);
 	}
 
 }

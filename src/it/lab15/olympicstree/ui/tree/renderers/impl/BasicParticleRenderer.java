@@ -14,11 +14,11 @@ public class BasicParticleRenderer implements ParticleRenderer {
 
 	@Override
 	public void render(OTParticle particle, BasicCanvas canvas) {
-		LOG.trace("rendering ({},{},{})...", new Object[]{particle.position().x(), particle.position().y(), particle.bean});
+		LOG.trace("rendering ({},{},{})...", new Object[]{particle.x, particle.y, particle.bean});
 		canvas.smooth();
 		canvas.fill(100, 120, 255);
 		canvas.noStroke();
-		canvas.ellipse(particle.position().x(), particle.position().y(), 20, 20);
+		canvas.ellipse(particle.x(), particle.y(), 20, 20);
 		canvas.noSmooth();
 		LOG.trace("rendered.");
 	}
