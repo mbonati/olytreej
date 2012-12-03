@@ -30,6 +30,7 @@ public class VirtualCanvas extends BasicCanvas {
 
 	public void setup() {
 		super.setup();
+		setupSizeAndRender();
 	}
 
 	@Override
@@ -40,6 +41,13 @@ public class VirtualCanvas extends BasicCanvas {
 		draggingScreen();   
 	}
 
+	protected void setupSizeAndRender(){
+		LOG.debug("setupSizeAndRender called...");
+		frameRate(60);
+		size(1024, 768, P3D);
+	}
+
+	
 	protected void drawVirtualContent() {
 	}
 

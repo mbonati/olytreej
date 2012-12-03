@@ -41,6 +41,7 @@ public class ToxiClusterExperiment extends MainCanvas {
 
 	public void setup() {
 		LOG.debug("setup called");
+		
 		super.setup();
 
 		smooth();
@@ -59,6 +60,12 @@ public class ToxiClusterExperiment extends MainCanvas {
 		LOG.debug("setup done");
 	}
 
+	@Override
+	protected void setupSizeAndRender(){
+		frameRate(60);
+		size(1024, 768, OPENGL);
+	}
+	
 	protected void loadData() {
 		LOG.debug("loadData called");
 		try {
@@ -86,12 +93,13 @@ public class ToxiClusterExperiment extends MainCanvas {
 		super.drawContent();
 
 		physics.update();
-
+		
+		smooth();
 		List<VerletParticle2D> particles = physics.particles;
 		for (VerletParticle2D particle : particles) {
 			particleRenderer.render((OTParticle) particle, this);
 		}
-
+		noSmooth();
 	}
 
 	// check all particles if mouse pos is less than snap distance

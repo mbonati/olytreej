@@ -26,12 +26,15 @@ public class MainCanvas extends VirtualCanvas {
 		backgroundImg = loadImageResource("bgLargeDark.jpg");
 		watermarkImg = loadImageResource("watermark.png");
 		logoImg = loadImageResource("logo.png");
-
-		frameRate(60);
-		size(1024, 768, P3D);
+		
 		smooth();
 
 	}
+	
+//	protected void setupSizeAndRender(){
+//		frameRate(60);
+//		size(1024, 768, P3D);
+//	}
 
 	@Override
 	protected void drawBackground() {
