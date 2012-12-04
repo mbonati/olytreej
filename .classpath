@@ -17,5 +17,9 @@
 	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/toxiclibscore.jar"/>
 	<classpathentry kind="lib" path="lib/verletphysics.jar"/>
+	<classpathentry kind="lib" path="lib/opengl/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="lib/opengl/jogl.jar"/>
+	<classpathentry kind="lib" path="lib/opengl/opengl.jar"/>
+	<classpathentry kind="lib" path="lib/Ani.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
