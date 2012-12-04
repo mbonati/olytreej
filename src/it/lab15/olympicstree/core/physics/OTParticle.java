@@ -8,12 +8,12 @@ import java.util.Map;
 import toxi.geom.ReadonlyVec2D;
 import toxi.physics2d.VerletParticle2D;
 
-public class OTParticle<T extends Bean> extends VerletParticle2D {
+public abstract class OTParticle<T extends Bean> extends VerletParticle2D {
 
 	public Map<String, Object> properties = new HashMap<String, Object>();
 	public T bean;
 	public boolean selected;
-
+	
 	public OTParticle(float x, float y, float z, T bean) {
 		super(x, y, z);
 		this.bean = bean;
@@ -39,5 +39,8 @@ public class OTParticle<T extends Bean> extends VerletParticle2D {
 		this.bean = bean;
 	}
 
-	
+	public abstract float getSizeX();
+
+	public abstract float getSizeY();
+
 }

@@ -31,10 +31,6 @@ public class MainCanvas extends VirtualCanvas {
 
 	}
 	
-//	protected void setupSizeAndRender(){
-//		frameRate(60);
-//		size(1024, 768, P3D);
-//	}
 
 	@Override
 	protected void drawBackground() {

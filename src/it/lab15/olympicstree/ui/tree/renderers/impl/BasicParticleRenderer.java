@@ -17,7 +17,7 @@ public class BasicParticleRenderer implements ParticleRenderer {
 		LOG.trace("rendering ({},{},{})...", new Object[]{particle.x, particle.y, particle.bean});
 		canvas.fill(100, 120, 255);
 		canvas.stroke(particle.selected ? 0xff00ffff : 0xff000000);
-		canvas.ellipse(particle.x(), particle.y(), 50, 50);
+		canvas.ellipse(particle.x(), particle.y(), particle.getSizeX(), particle.getSizeY());
 		LOG.trace("rendered.");
 	}
 

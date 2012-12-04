@@ -3,23 +3,28 @@ package it.lab15.olympicstree.ui.commons;
 import it.lab15.olympicstree.commons.Vec2;
 import it.lab15.olympicstree.resources.ResourcesLocator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 public class BasicCanvas extends PApplet {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(BasicCanvas.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BasicCanvas.class);
 
 	private Map<String, PImage> cachedImages = new HashMap<String, PImage>();
 	private boolean displayDebugIformations = true;
-	
+	private PFont debugInfoFont = loadFontResource("Monospaced-12.vlw");
+
 	public BasicCanvas() {
 		LOG.debug("Initializing basic canvas...");
 	}
@@ -48,8 +53,7 @@ public class BasicCanvas extends PApplet {
 	 * @return
 	 */
 	public PImage loadImageResource(String filename, boolean shared) {
-		LOG.debug("loadImage called for loadImage={} shared={}", filename,
-				shared);
+		LOG.debug("loadImage called for loadImage={} shared={}", filename, shared);
 		if (shared) {
 			if (cachedImages.containsKey(filename)) {
 				return cachedImages.get(filename);
@@ -64,7 +68,7 @@ public class BasicCanvas extends PApplet {
 	}
 
 	private PImage loadImageResourceInternal(String filename) {
-		String fileURL = ResourcesLocator.getImageResourceURL(filename);
+		String fileURL = ResourcesLocator.getImageResourceURI(filename);
 		LOG.debug("loadImageInternal called for {}: path={}", filename, fileURL);
 		return loadImage(fileURL);
 	}
@@ -181,26 +185,26 @@ public class BasicCanvas extends PApplet {
 
 	@Override
 	public void draw() {
-		//Background
+		// Background
 		drawBackground();
-		
-		//Debug infos
+
+		// Debug infos
 		drawDebugInformations();
-		
+
 		// Draw the effective visualization content
 		pushMatrix();
 		drawContent();
 		popMatrix();
-		
-		//Watermark logo
+
+		// Watermark logo
 		drawWatermark();
-		
+
 	}
 
-
 	protected void drawDebugInformations() {
-		if (this.displayDebugIformations){
-			fill(200,255,230);
+		if (this.displayDebugIformations) {
+			fill(200, 255, 230);
+			textFont(debugInfoFont, 10);
 			text((int) frameRate + " FPS", 10, 20);
 		}
 	}
@@ -222,5 +226,30 @@ public class BasicCanvas extends PApplet {
 	public void setDisplayDebugIformations(boolean displayDebugIformations) {
 		this.displayDebugIformations = displayDebugIformations;
 	}
-	
+
+	public static PFont loadFontResource(String filename) {
+		LOG.debug("loadFontResource called for {}" ,  filename);
+		try {
+			InputStream input = ResourcesLocator.getFontResourceURL(filename).openStream();
+			return new PFont(input);
+		} catch (Exception e) {
+			LOG.error("Could not load font {}. Make sure that the font has been copied to the resources package.", filename, e);
+			//die("Could not load font " + filename + ". " + "Make sure that the font has been copied " + "to the data folder of your sketch.", e);
+		}
+		return null;
+	}
+
+	public static InputStream createInputFormResource(String filename) throws IOException {
+		InputStream input = ResourcesLocator.getResourceURL(filename).openStream();
+		if ((input != null) && filename.toLowerCase().endsWith(".gz")) {
+			try {
+				return new GZIPInputStream(input);
+			} catch (IOException e) {
+				LOG.error("createInputFormResource error:{}", e.getMessage(), e);
+				return null;
+			}
+		}
+		return input;
+	}
+
 }

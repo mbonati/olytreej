@@ -16,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import processing.core.PFont;
 import toxi.geom.Rect;
 import toxi.geom.Vec2D;
 import toxi.physics2d.VerletParticle2D;
@@ -29,12 +30,15 @@ public class ToxiClusterExperiment extends MainCanvas {
 
 	OTPhysics2D physics;
 	BasicParticleRenderer particleRenderer;
+	SimpleEditionParticleRenderer editionParticleRenderer;
 	
 	// squared snap distance for picking particles
 	float snapDist=20*20;
 
 	VerletParticle2D selected = null;
 
+	PFont particleFont = loadFontResource("AppleGothic-18.vlw");
+	
 	public ToxiClusterExperiment() {
 		super();
 	}
@@ -47,7 +51,7 @@ public class ToxiClusterExperiment extends MainCanvas {
 		smooth();
 		stroke(0);
 		
-		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D(0.0f, 0.9f);
+		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D(0.0f, 0.1f);
 		physics = new OTPhysics2D();
 		physics.setWorldBounds(new Rect(0, 0, width, height));
 		physics.addBehavior(new GravityBehavior(gravity));
@@ -55,7 +59,8 @@ public class ToxiClusterExperiment extends MainCanvas {
 		physics.clear();
 
 		particleRenderer = new BasicParticleRenderer();
-
+		editionParticleRenderer = new SimpleEditionParticleRenderer();
+		
 		loadData();
 		LOG.debug("setup done");
 	}
@@ -76,6 +81,7 @@ public class ToxiClusterExperiment extends MainCanvas {
 				EditionParticle editionParticle = new EditionParticle(random(0,
 						600f), random(0, 600f), edition);
 				editionParticle.setWeight(2.9f);
+				editionParticle.font = this.particleFont;
 				physics.addBehavior(new AttractionBehavior(editionParticle, 20,
 						-1.2f, 0.01f));
 				physics.addParticle(editionParticle);
@@ -97,7 +103,11 @@ public class ToxiClusterExperiment extends MainCanvas {
 		smooth();
 		List<VerletParticle2D> particles = physics.particles;
 		for (VerletParticle2D particle : particles) {
-			particleRenderer.render((OTParticle) particle, this);
+			if (particle instanceof EditionParticle){
+				editionParticleRenderer.render((OTParticle) particle, this);
+			} else {
+				particleRenderer.render((OTParticle) particle, this);
+			}
 		}
 		noSmooth();
 	}

@@ -36,7 +36,6 @@ public class AniSimpleExperiment extends MainCanvas {
 	}
 
 	protected void setupSizeAndRender(){
-		frameRate(60);
 		size(1024, 768, OPENGL);
 	}
 
