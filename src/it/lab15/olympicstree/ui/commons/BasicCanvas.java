@@ -1,11 +1,13 @@
 package it.lab15.olympicstree.ui.commons;
 
+import it.lab15.olympicstree.commons.Size;
 import it.lab15.olympicstree.commons.Vec2;
 import it.lab15.olympicstree.resources.ResourcesLocator;
 
+import java.awt.GraphicsDevice;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -65,6 +67,16 @@ public class BasicCanvas extends PApplet {
 		} else {
 			return loadImageResourceInternal(filename);
 		}
+	}
+
+	public Size getDisplaySize() {
+		GraphicsDevice displayDevice = getGraphicsConfiguration().getDevice();
+		if (displayDevice == null)
+			return null;
+		Rectangle screenRect = displayDevice.getDefaultConfiguration().getBounds();
+		// screenX = screenRect.x;
+		// screenY = screenRect.y;
+		return new Size(screenRect.width,screenRect.height);
 	}
 
 	private PImage loadImageResourceInternal(String filename) {
@@ -228,13 +240,15 @@ public class BasicCanvas extends PApplet {
 	}
 
 	public static PFont loadFontResource(String filename) {
-		LOG.debug("loadFontResource called for {}" ,  filename);
+		LOG.debug("loadFontResource called for {}", filename);
 		try {
 			InputStream input = ResourcesLocator.getFontResourceURL(filename).openStream();
 			return new PFont(input);
 		} catch (Exception e) {
 			LOG.error("Could not load font {}. Make sure that the font has been copied to the resources package.", filename, e);
-			//die("Could not load font " + filename + ". " + "Make sure that the font has been copied " + "to the data folder of your sketch.", e);
+			// die("Could not load font " + filename + ". " +
+			// "Make sure that the font has been copied " +
+			// "to the data folder of your sketch.", e);
 		}
 		return null;
 	}
