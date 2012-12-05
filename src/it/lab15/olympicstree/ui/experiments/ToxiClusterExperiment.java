@@ -17,6 +17,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import peasy.PeasyCam;
 import processing.core.PFont;
 import toxi.geom.Rect;
 import toxi.geom.Vec2D;
@@ -39,6 +40,7 @@ public class ToxiClusterExperiment extends MainCanvas {
 
 	PFont particleFont = loadFontResource("AppleGothic-18.vlw");
 
+
 	public ToxiClusterExperiment() {
 		super();
 	}
@@ -51,11 +53,11 @@ public class ToxiClusterExperiment extends MainCanvas {
 		smooth();
 		stroke(0);
 
-		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D(0.0f, 0.1f);
+		toxi.geom.Vec2D gravity = new toxi.geom.Vec2D(0.0f, 0.0f);
 		physics = new OTPhysics2D();
 		physics.setWorldBounds(new Rect(0, 0, width, height));
 		physics.addBehavior(new GravityBehavior(gravity));
-		physics.setDrag(0.3f);
+		physics.setDrag(0.9f);
 		physics.clear();
 
 		particleRenderer = new BasicParticleRenderer();
@@ -69,7 +71,12 @@ public class ToxiClusterExperiment extends MainCanvas {
 	protected void setupSizeAndRender() {
 		frameRate(60);
 		Size displaySize = getDisplaySize();
-		size(displaySize.w,displaySize.h, OPENGL);
+		// size(displaySize.w,displaySize.h, OPENGL);
+		size(displaySize.w, displaySize.h, OPENGL);
+	}
+
+	protected void drawBackground() {
+		background(35);
 	}
 
 	protected void loadData() {
@@ -78,12 +85,26 @@ public class ToxiClusterExperiment extends MainCanvas {
 			EditionFactory ef = new EditionFactory();
 			List<Edition> allEditions = ef.loadAll();
 
+			EditionParticle previousEdition = null;
 			for (Edition edition : allEditions) {
 				EditionParticle editionParticle = new EditionParticle(random(0, 600f), random(0, 600f), edition);
 				editionParticle.setWeight(2.9f);
 				editionParticle.font = this.particleFont;
 				physics.addBehavior(new AttractionBehavior(editionParticle, 20, -1.2f, 0.01f));
 				physics.addParticle(editionParticle);
+
+				// //mettiamo vicine le edizioni
+				// if (previousEdition!=null){
+				// VerletSpring2D spring = new VerletSpring2D(editionParticle,
+				// previousEdition,120f, 1.01f);
+				// physics.addSpring(spring);
+				// }
+
+				// define a repulsion field around each particle
+				// this is used to push the ball away
+				physics.addBehavior(new AttractionBehavior(editionParticle, editionParticle.radius * 2, -20));
+
+				previousEdition = editionParticle;
 			}
 
 		} catch (Exception ex) {
@@ -109,6 +130,7 @@ public class ToxiClusterExperiment extends MainCanvas {
 			}
 		}
 		noSmooth();
+
 	}
 
 	// check all particles if mouse pos is less than snap distance
@@ -161,7 +183,10 @@ public class ToxiClusterExperiment extends MainCanvas {
 	 */
 	public static void main(String[] args) {
 		LOG.info("Starting Dendril {}...", AppDefines.APPLICATION_NAME);
-		ProcessingUtils.runSketch(ToxiClusterExperiment.class, true /*full screen*/);
+		ProcessingUtils.runSketch(ToxiClusterExperiment.class, true /*
+																	 * full
+																	 * screen
+																	 */);
 	}
 
 }

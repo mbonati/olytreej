@@ -6,7 +6,7 @@ import processing.core.PFont;
 
 public class EditionParticle extends OTParticle<Edition> {
 	
-	private float radius;
+	public float radius;
 	public PFont font;
 	
 	public EditionParticle(float x, float y, Edition bean) {
